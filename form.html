@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOYA India - Secret Journeys</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 1s ease forwards;
+    }
+    .animation-delay-100 {
+      animation-delay: 100ms;
+    }
+    .animation-delay-300 {
+      animation-delay: 300ms;
+    }
+    .animation-delay-500 {
+      animation-delay: 500ms;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, .logo {
+      font-family: 'Playfair Display', serif !important;
+    }
+    .welcome-title, .how-it-works-title {
+      font-family: 'Cormorant Garamond', serif !important;
+    }
+    p, label, input, select, textarea, button {
+      font-family: 'Inter', sans-serif !important;
+    }
+  </style>
+</head>
+<body class="font-sans text-gray-900 bg-gray-50 min-h-screen">
+
+  <!-- Only keep the homepage-style nav below, remove duplicate -->
+
+  <nav class="fixed w-full z-40 transition-all duration-300 py-4 bg-black bg-opacity-90">
+    <div class="container mx-auto px-4 flex items-center justify-between" style="position:relative;">
+      <div style="flex:1;display:flex;justify-content:flex-start;">
+        <div id="menu-toggle" tabindex="0" role="button" aria-label="Toggle navigation menu" style="width:30px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.3s ease;">
+          <div style="width:100%;height:3px;background:white;transition:all 0.3s ease;transform-origin:center;"></div>
+          <div style="width:100%;height:3px;background:white;transition:all 0.3s ease;transform-origin:center;"></div>
+          <div style="width:100%;height:3px;background:white;transition:all 0.3s ease;transform-origin:center;"></div>
+        </div>
+      </div>
+      <div style="flex:2;display:flex;justify-content:center;">
+        <div class="logo" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:600;color:white;letter-spacing:3px;text-shadow:2px 2px 4px rgba(0,0,0,0.5);">VOYA</div>
+      </div>
+      <div style="flex:1;"></div>
+    </div>
+    
+    <div id="mobile-menu" class="hidden bg-black bg-opacity-90 py-4 px-4">
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <a href="#hero" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">Home</a>
+        <a href="#welcome" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">About Us</a>
+        <div class="nav-item nav-experiences-group" style="position:relative;padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">
+          <a href="experience.html" class="nav-item experiences-title-link" role="menuitem" style="margin-bottom:0;color:#fff;">Our Experiences</a>
+        </div>
+        <a href="Reviews.html" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">Testimonials</a>
+        <a href="#how-it-works" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">How It Works</a>
+        <a href="contact.html" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;color:#fff;">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <video autoplay loop muted playsinline class="absolute w-full h-full object-cover">
+      <source src="18.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in opacity-0 animation-delay-100 text-white">
+        Secret Journeys
+      </h1>
+      <p class="text-xl md:text-2xl mb-8 animate-fade-in opacity-0 animation-delay-300 text-white">
+        Discover hidden gems and extraordinary adventures with VOYA
+      </p>
+      <button 
+        onclick="document.getElementById('experiences').scrollIntoView({ behavior: 'smooth' })"
+        class="animate-fade-in opacity-0 animation-delay-500 bg-blue-600 hover:bg-blue-700 transition text-white font-medium py-3 px-6 rounded-md"
+      >
+        Explore Experiences
+      </button>
+    </div>
+  </section>
+
+  <section id="experiences" class="py-20 bg-gray-900 relative">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto border-none shadow-lg bg-white rounded-lg overflow-hidden">
+        <div class="p-6 md:p-8">
+          <h2 class="text-3xl font-bold text-center mb-6">
+            Your Journey Begins Here
+          </h2>
+          <p class="text-center text-gray-600 mb-8">
+            Complete the quick enquiry form below to book your free consultation with one of our talented travel experts
+          </p>
+          
+          <form id="travel-form" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="firstName" class="block text-sm font-medium text-gray-700">First name*</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-medium text-gray-700">Last name*</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email*</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                />
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone*</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Type of holiday</label>
+              <select 
+                id="holidayType"
+                name="holidayType"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+              >
+                <option value="">Select holiday type</option>
+                <option value="adventure">Adventure</option>
+                <option value="cultural">Cultural</option>
+                <option value="wellness">Wellness & Spa</option>
+                <option value="honeymoon">Honeymoon</option>
+                <option value="family">Family Vacation</option>
+                <option value="luxury">Luxury Getaway</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Length</label>
+              <select 
+                id="length"
+                name="length"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+              >
+                <option value="">Select trip duration</option>
+                <option value="weekend">Weekend Getaway (2-3 days)</option>
+                <option value="short">Short Break (4-7 days)</option>
+                <option value="extended">Extended Vacation (8-14 days)</option>
+                <option value="long">Long Journey (15+ days)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Preferred travel dates</label>
+              <input
+                type="date"
+                id="departureDate"
+                name="departureDate"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Departure city in India*</label>
+              <select 
+                id="departureCity"
+                name="departureCity"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+              >
+                <option value="">Select your city</option>
+                <option value="delhi">Delhi</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="bangalore">Bangalore</option>
+                <option value="hyderabad">Hyderabad</option>
+                <option value="chennai">Chennai</option>
+                <option value="kolkata">Kolkata</option>
+                <option value="ahmedabad">Ahmedabad</option>
+                <option value="pune">Pune</option>
+                <option value="jaipur">Jaipur</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Tell us more. What are you looking for?</label>
+              <textarea
+                id="preferences"
+                name="preferences"
+                rows="4"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
+                placeholder="E.g. I want to explore hidden beaches, experience local festivals, and stay in unique accommodations..."
+              ></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-4">How much are you prepared to spend? (INR)</label>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <input type="radio" id="r1" name="budget" value="10000" class="hidden peer" checked>
+                  <label for="r1" class="flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-500 cursor-pointer">
+                    ₹10,000 - 25,000
+                  </label>
+                </div>
+                <div>
+                  <input type="radio" id="r2" name="budget" value="15000" class="hidden peer">
+                  <label for="r2" class="flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-500 cursor-pointer">
+                    ₹25,000 - 50,000
+                  </label>
+                </div>
+                <div>
+                  <input type="radio" id="r3" name="budget" value="20000" class="hidden peer">
+                  <label for="r3" class="flex flex-col items-center justify-between rounded-md border-2 border-gray-200 bg-white p-4 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-500 cursor-pointer">
+                    ₹50,000+
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4">
+              <p class="text-sm text-gray-600 mb-6">
+                At Voya, we are passionate about curating vacations where every moment is a surprise for each traveller. We leave no stone unturned, devoting ourselves to researching thoroughly and using our insider knowledge and our own experiences to create an exhilarating itinerary filled with unconventional activities, hidden gems and roads less travelled.
+              </p>
+              <button type="submit" class="w-full py-3 text-lg bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md">
+                Submit Enquiry
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 px-4 relative" style="background: url('20.jpg') center center/cover no-repeat;">
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);z-index:0;"></div>
+    <div class="container mx-auto max-w-4xl text-center relative" style="z-index:1;">
+      <h2 class="text-2xl md:text-3xl font-bold mb-8" style="color:#fff;">Why Travelers Choose Us</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-3">Local Expertise</h3>
+          <p class="text-gray-600">Our team has explored every corner of India and knows the hidden gems.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-3">Tailored Experiences</h3>
+          <p class="text-gray-600">Each itinerary is customized to your preferences and travel style.</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-3">Hassle-Free Planning</h3>
+          <p class="text-gray-600">We handle all the details so you can focus on the experience.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>About VOYA</h4>
+          <p style="text-align:left;">Crafting surprise journeys that transform how you experience India. Every trip is a story waiting to unfold.</p>
+          <div class="footer-social">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#welcome">About Us</a></li>
+            <li><a href="#experiences">Our Experiences</a></li>
+            <li><a href="Reviews.html">Testimonials</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Us</h4>
+          <ul class="contact-info">
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 0C7.802 0 4 3.403 4 7.602 4 11.8 7.469 16.812 12 24c4.531-7.188 8-12.2 8-16.398C20 3.403 16.199 0 12 0zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+              Mumbai, Maharashtra, India
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              hello@voya.com
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1.02 1.02 0 00-1.02.24l-2.2 2.2a15.045 15.045 0 01-6.59-6.59l2.2-2.21a.96.96 0 00.25-1A11.36 11.36 0 018.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM19 12h2a9 9 0 00-9-9v2c3.87 0 7 3.13 7 7z"/></svg>
+              +91 98765 43210
+            </li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Newsletter</h4>
+          <p>Subscribe to receive updates about new destinations and special offers.</p>
+          <form class="newsletter-form" action="#" method="POST">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 VOYA. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="d1.docx" target="_blank">Privacy Policy</a>
+          <a href="d2.docx" target="_blank">Terms of Service</a>
+          <a href="d3.docx" target="_blank">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <style>
+    .site-footer {
+      background-color: #0c0c0c;
+      color: #fff;
+      padding: 5rem 2rem 2rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-section h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+    .footer-section p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+    .footer-social a {
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+    .footer-social a:hover {
+      color: #00bfff;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin-bottom: 0.8rem;
+    }
+    .footer-section ul a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .footer-section ul a:hover {
+      color: #fff;
+    }
+    .contact-info li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .contact-info svg {
+      flex-shrink: 0;
+    }
+    .newsletter-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .newsletter-form input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .newsletter-form input:focus {
+      outline: none;
+      border-color: #00bfff;
+    }
+    .newsletter-form button {
+      padding: 0.8rem 1.5rem;
+      background: #00bfff;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .newsletter-form button:hover {
+      background: #0099cc;
+    }
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: #fff;
+    }
+    @media (max-width: 1024px) {
+      .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+
+  <script>
+    // Mobile menu toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    // Form submission
+    document.getElementById('travel-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you for your enquiry! Our travel expert will contact you soon.');
+      this.reset();
+    });
+
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Hide nav on scroll down, show on scroll up
+    let lastScrollTop = 0;
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', function() {
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      if (st > lastScrollTop && st > 80) {
+        // Scrolling down
+        nav.style.transform = 'translateY(-100%)';
+        nav.style.transition = 'transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)';
+      } else {
+        // Scrolling up
+        nav.style.transform = 'translateY(0)';
+        nav.style.transition = 'transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)';
+      }
+      lastScrollTop = st <= 0 ? 0 : st;
+    }, false);
+  </script>
+</body>
+</html>

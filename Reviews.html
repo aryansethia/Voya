@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stories - VOYA Secret Journeys</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Setup */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8;
+            color: #2c2c2c;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .page-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .back-home-link {
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            color: #fff;
+            background-color: #000;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-home-link:hover {
+            background-color: #333;
+        }
+
+        /* Main Stories Section */
+        .stories-section {
+            width: 100%;
+            background-color: #fff;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .stories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .stories-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .stories-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        .stories-cta {
+            display: inline-block;
+            background-color: #000;
+            color: #fff;
+            padding: 0.8rem 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            text-decoration: none;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            margin-bottom: 4rem;
+            border: 1px solid #000;
+            transition: all 0.3s ease;
+        }
+
+        .stories-cta:hover {
+            background-color: #333;
+        }
+
+        /* Scrollable Cards Container */
+        .scroll-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 1rem 0 2rem 0;
+            margin: 0 -2rem; /* Allow cards to bleed to edges on smaller screens */
+            padding-left: calc((100vw - 1200px) / 2 + 2rem);
+            padding-right: 2rem;
+        }
+        
+        .stories-grid {
+            display: flex;
+            gap: 2rem;
+            width: max-content;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 1rem; /* Space for shadow */
+        }
+
+        .scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-wrapper {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Individual Story Card */
+        .story-card {
+            flex: 0 0 300px;
+            width: 300px;
+            height: 450px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            scroll-snap-align: start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .story-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .story-card-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .story-card-content {
+            padding: 1rem;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .story-card-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .story-card-trip {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 0.75rem;
+        }
+
+        .story-card-testimonial {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #444;
+            flex-grow: 1;
+        }
+
+        .story-card-readmore {
+            display: inline-block;
+            margin-top: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #000;
+            border: 1px solid #000;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            align-self: flex-start;
+            transition: all 0.3s ease;
+        }
+
+        .story-card-readmore:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Responsive Behavior */
+        @media (max-width: 1240px) {
+            .scroll-wrapper {
+                padding-left: 2rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .stories-container, .page-header {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            .scroll-wrapper {
+                margin: 0 -1.5rem;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            .story-card {
+                flex-basis: 85%;
+                width: 85%;
+                height: auto;
+            }
+            .stories-title {
+                font-size: 2rem;
+            }
+            .stories-subtitle {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Accessibility */
+        .stories-cta:focus,
+        .story-card-readmore:focus,
+        .back-home-link:focus,
+        .story-card:focus-within { /* focus on card when child is focused */
+            outline: 2px solid #00bfff;
+            outline-offset: 2px;
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            background-color: #0c0c0c;
+            color: #fff;
+            padding: 5rem 2rem 2rem;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+        .footer-section p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #aaa;
+            margin-bottom: 1.5rem;
+        }
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        .footer-social a {
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+        .footer-social a:hover {
+            color: #00bfff;
+        }
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+        .footer-section ul a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .footer-section ul a:hover {
+            color: #fff;
+        }
+        .contact-info li {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .contact-info svg {
+            flex-shrink: 0;
+        }
+        .newsletter-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 0.9rem;
+        }
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: #00bfff;
+        }
+        .newsletter-form button {
+            padding: 0.8rem 1.5rem;
+            background: #00bfff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .newsletter-form button:hover {
+            background: #0099cc;
+        }
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-links a:hover {
+            color: #fff;
+        }
+        @media (max-width: 1024px) {
+          .footer-content {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (max-width: 768px) {
+          .footer-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+          .footer-bottom {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+          }
+          .footer-links {
+            flex-direction: column;
+            gap: 1rem;
+          }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <a href="index.html" class="header-logo">VOYA</a>
+        <a href="index.html" class="back-home-link">BACK TO HOME</a>
+    </header>
+
+    <main>
+        <section id="stories" class="stories-section">
+            <div class="stories-container">
+                <h2 class="stories-title">Stories</h2>
+                <p class="stories-subtitle">Check out our VOYA travelers’ stories! They’ve ventured off the beaten path—read why they’ll never travel another way.</p>
+                <a href="#" class="stories-cta">BEGIN YOUR JOURNEY</a>
+
+                <div class="scroll-wrapper">
+                    <div class="stories-grid">
+                        
+                        <article class="story-card">
+                            <img src="23.jpg" alt="Photo of Aarav & Kavya" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Aarav & Kavya</h3>
+                                <p class="story-card-trip">Himalayan Discovery</p>
+                                <p class="story-card-testimonial">“Our trek through hidden valleys changed us. VOYA surprised us with secret homestays and apple orchards under the stars!”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+
+                        <article class="story-card">
+                            <img src="24.jpg" alt="Photo of Meera & Saurabh" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Meera & Saurabh</h3>
+                                <p class="story-card-trip">Backwaters & Beaches (Kerala)</p>
+                                <p class="story-card-testimonial">“From canoe rides at dawn to private spice‑farm dinners, VOYA’s mystery honeymoon was pure magic.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+                        
+                        <article class="story-card">
+                            <img src="25.jpg" alt="Photo of Raj & Priyanka" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Raj & Priyanka</h3>
+                                <p class="story-card-trip">Desert Magic (Rajasthan)</p>
+                                <p class="story-card-testimonial">“Sand dunes at sunrise, folk dancers by night. VOYA took care of every detail so we could just live the dream.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+                        
+                        <article class="story-card">
+                            <img src="26.jpg" alt="Photo of Nisha & Ankit" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Nisha & Ankit</h3>
+                                <p class="story-card-trip">Tea Trails (Darjeeling & Assam)</p>
+                                <p class="story-card-testimonial">“Sipping tea in cloud‑forests and learning from tea masters—our VOYA journey felt like a living storybook.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+                        
+                        <article class="story-card">
+                            <img src="27.jpg" alt="Photo of Fatima & Arjun" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Fatima & Arjun</h3>
+                                <p class="story-card-trip">Jungle Safari (Madhya Pradesh)</p>
+                                <p class="story-card-testimonial">“Tigers, wildlife guides, and secret lodges in the woods—VOYA made our wildlife adventure worry‑free and unforgettable.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+                        
+                        <article class="story-card">
+                            <img src="28.jpg" alt="Photo of Sita & Rohit" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Sita & Rohit</h3>
+                                <p class="story-card-trip">Coastal Escape (Goa & Gokarna)</p>
+                                <p class="story-card-testimonial">“Hidden coves, cliff‑side yoga, and midnight bonfires. VOYA’s coastal mystery package was the perfect blend of calm and thrill.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+                        
+                        <article class="story-card">
+                            <img src="29.jpg" alt="Photo of Kavitha & Manoj" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Kavitha & Manoj</h3>
+                                <p class="story-card-trip">Heritage Trails (Hampi & Orchha)</p>
+                                <p class="story-card-testimonial">“Ancient ruins by day, village festivals by night. VOYA unlocked India’s past in the most immersive way.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+
+                        <article class="story-card">
+                            <img src="30.jpg" alt="Photo of Zara & Imran" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Zara & Imran</h3>
+                                <p class="story-card-trip">Tea & Trek Mix (Sikkim)</p>
+                                <p class="story-card-testimonial">“From monastery blessings to secret mountain passes, VOYA’s Sikkim mystery exceeded every expectation.”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+
+                        <article class="story-card">
+                            <img src="31.jpg" alt="Photo of Divya & Rohan" class="story-card-image">
+                            <div class="story-card-content">
+                                <h3 class="story-card-name">Divya & Rohan</h3>
+                                <p class="story-card-trip">Island Bliss (Andaman & Nicobar)</p>
+                                <p class="story-card-testimonial">“Crystal‑clear waters, hidden lagoons, and private beach huts. VOYA’s island surprise was our best trip ever!”</p>
+                                <a href="#" class="story-card-readmore">Read More</a>
+                            </div>
+                        </article>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>About VOYA</h4>
+          <p style="text-align:left;">Crafting surprise journeys that transform how you experience India. Every trip is a story waiting to unfold.</p>
+          <div class="footer-social">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#welcome">About Us</a></li>
+            <li><a href="#experiences">Our Experiences</a></li>
+            <li><a href="Reviews.html">Testimonials</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Us</h4>
+          <ul class="contact-info">
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 0C7.802 0 4 3.403 4 7.602 4 11.8 7.469 16.812 12 24c4.531-7.188 8-12.2 8-16.398C20 3.403 16.199 0 12 0zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+              Mumbai, Maharashtra, India
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              hello@voya.com
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1.02 1.02 0 00-1.02.24l-2.2 2.2a15.045 15.045 0 01-6.59-6.59l2.2-2.21a.96.96 0 00.25-1A11.36 11.36 0 018.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM19 12h2a9 9 0 00-9-9v2c3.87 0 7 3.13 7 7z"/></svg>
+              +91 98765 43210
+            </li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Newsletter</h4>
+          <p>Subscribe to receive updates about new destinations and special offers.</p>
+          <form class="newsletter-form" action="#" method="POST">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 VOYA. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="d1.docx" target="_blank">Privacy Policy</a>
+          <a href="d2.docx" target="_blank">Terms of Service</a>
+          <a href="d3.docx" target="_blank">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

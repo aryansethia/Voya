@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VOYA - Secret Journeys</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+      background-color: #000;
+    }
+
+    /* Loading animation */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid #00bfff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Navigation */
+    .nav-container {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 1000;
+    }
+
+    .menu-icon {
+      width: 30px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-icon:hover {
+      transform: scale(1.1);
+    }
+
+    .menu-line {
+      width: 100%;
+      height: 3px;
+      background: white;
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+
+    .menu-icon.active .menu-line:nth-child(1) {
+      transform: rotate(45deg) translate(8px, 8px);
+    }
+
+    .menu-icon.active .menu-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-icon.active .menu-line:nth-child(3) {
+      transform: rotate(-45deg) translate(8px, -8px);
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 2rem;
+      min-width: 250px;
+      opacity: 0;
+      transform: translateY(-20px);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-menu.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .nav-item {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-item:last-child {
+      border-bottom: none;
+    }
+
+    .nav-item:hover {
+      color: #00bfff;
+      transform: translateX(10px);
+    }
+
+    /* Social Media Icons */
+    .social-icons {
+      position: absolute;
+      top: 50%;
+      right: 2rem;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 3;
+    }
+
+    .social-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .social-icon:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .social-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: rgba(255, 255, 255, 0.8);
+      transition: fill 0.3s ease;
+    }
+
+    .social-icon:hover svg {
+      fill: rgba(255, 255, 255, 1);
+    }
+    #hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    #hero .overlay {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+      padding: 2rem;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .logo {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: white;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.5s forwards;
+      text-align: center;
+      width: 100%;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      font-style: italic;
+      color: #e0e0e0;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.7s forwards;
+      text-align: center;
+      width: 100%;
+    }
+
+    p {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+      color: #d0d0d0;
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.9s forwards;
+      text-align: center;
+      width: 100%;
+    }
+
+    .btn {
+      margin-top: 2.5rem;
+      padding: 1rem 3rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 1.1rem;
+      color: #fff;
+      background: linear-gradient(45deg, #00bfff, #0080ff);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeInUp 1s ease 1.1s forwards;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      background: linear-gradient(45deg, #009fd6, #0066cc);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+      min-height: 100vh;
+      background: #f8f8f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+
+    .welcome-container {
+      max-width: 900px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .welcome-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 400;
+      color: #2c2c2c;
+      margin-bottom: 2.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.3s forwards;
+    }
+
+    .welcome-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .welcome-description {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.5s forwards;
+    }
+
+    .welcome-description strong {
+      font-weight: 600;
+      color: #222;
+    }
+
+    .welcome-tagline {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 2.8rem;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.7s forwards;
+    }
+
+    .get-in-touch-btn {
+      padding: 1rem 2.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #fff;
+      background: #000;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0;
+      animation: fadeInUp 1s ease 0.9s forwards;
+    }
+
+    .get-in-touch-btn:hover {
+      background: #333;
+      transform: translateY(-2px);
+    }
+
+    .get-in-touch-btn:focus {
+      outline: 2px solid #00bfff;
+      outline-offset: 2px;
+    }
+
+    /* Experiences Section */
+    .experiences-section {
+        background: #0c0c0c;
+        padding: 6rem 2rem;
+        text-align: center;
+    }
+
+    .experiences-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .experiences-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #ffffff;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+    }
+
+    .experiences-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.1rem;
+        color: #ccc;
+        margin-bottom: 4rem;
+    }
+
+    .carousel-wrapper {
+        position: relative;
+    }
+
+    .experience-grid {
+        display: flex;
+        overflow-x: auto;
+        gap: 2rem;
+        padding: 1rem;
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .experience-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .experience-card {
+        flex: 0 0 calc(100% / 3 - 2rem * 2 / 3);
+        position: relative;
+        height: 450px;
+        border-radius: 12px;
+        overflow: hidden;
+        background-size: cover;
+        background-position: center;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .experience-card.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .experience-card:hover {
+        transform: scale(1.05);
+    }
+
+    .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+        transition: background 0.4s ease;
+    }
+
+    .experience-card:hover .card-overlay {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .card-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 0.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .card-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        color: #bbbbbb;
+        max-width: 80%;
+        transition: transform 0.3s ease;
+    }
+
+    .experience-card:hover .card-title,
+    .experience-card:hover .card-subtitle {
+        transform: translateY(-10px);
+    }
+
+    .card-btn {
+        position: absolute;
+        bottom: 2rem;
+        padding: 0.8rem 2rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 1rem;
+        color: #fff;
+        background: linear-gradient(45deg, #00bfff, #0080ff);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+        box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+    }
+
+    .experience-card:hover .card-btn {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .card-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
+    }
+
+    .scroll-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        background-color: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: all 0.2s ease-in-out;
+    }
+
+    .scroll-btn:hover {
+        background-color: white;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .scroll-btn svg {
+        stroke: #0c0c0c;
+        width: 30px;
+        height: 30px;
+    }
+
+    #scroll-left {
+        left: -25px;
+    }
+
+    #scroll-right {
+        right: -25px;
+    }
+
+    .scroll-btn.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+        background: #f8f8f8;
+        padding: 6rem 2rem;
+        text-align: center;
+    }
+    .testimonials-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .testimonials-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: #2c2c2c;
+        letter-spacing: 2px;
+        margin-bottom: 5rem;
+    }
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        margin-bottom: 4rem;
+    }
+    .testimonial-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .testimonial-card.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .testimonial-quote-icon {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 1.5rem;
+        border-radius: 0;
+        object-fit: contain;
+        background: none;
+        box-shadow: none;
+        border: none;
+        clip-path: none;
+        overflow: visible;
+    }
+    .testimonial-card blockquote {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #555;
+        margin-bottom: 1.5rem;
+        max-width: 350px;
+        font-style: italic;
+        text-align: center;
+    }
+    .testimonial-card footer {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+        color: #2c2c2c;
+    }
+    .testimonial-card .author {
+        font-weight: 600;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.1rem;
+    }
+    .testimonial-card .details {
+        font-weight: 400;
+        color: #777;
+        margin-top: 0.25rem;
+        font-size: 0.9rem;
+    }
+    .btn-secondary {
+        padding: 0.8rem 2.5rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 1rem;
+        color: #2c2c2c;
+        background-color: transparent;
+        border: 1px solid #2c2c2c;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .btn-secondary:hover {
+        background-color: #2c2c2c;
+        color: #fff;
+    }
+
+    /* How It Works Section */
+    .how-it-works-section {
+        position: relative;
+        padding: 8rem 2rem;
+        text-align: center;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: #fff;
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('15.jpg');
+    }
+    .how-it-works-container {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+    .how-it-works-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 100rem;
+        font-weight: 500;
+        margin-bottom: 2.2rem;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+        letter-spacing: 1px;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .how-it-works-title.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .how-it-works-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+    .how-step {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .how-step.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .how-step h3 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.15rem;
+        font-weight: 500;
+        margin-bottom: 0.35rem;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+        letter-spacing: 0.5px;
+    }
+    .how-step p {
+        font-family: 'Inter', sans-serif;
+        font-size: 0.92rem;
+        font-weight: 400;
+        max-width: 500px;
+        margin: 0 auto;
+        color: #e0e0e0;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+        letter-spacing: 0.2px;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 1200px) {
+      .experiences-container {
+        max-width: 90%;
+      }
+    }
+
+    @media (max-width: 1023px) {
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .logo { font-size: 2rem; top: 1.5rem; }
+      .nav-container { top: 1.5rem; left: 1.5rem; }
+      .nav-menu { min-width: 200px; padding: 1.5rem; }
+      .social-icons { right: 1.5rem; gap: 0.8rem; }
+      .social-icon { width: 40px; height: 40px; }
+      .social-icon svg { width: 18px; height: 18px; }
+      h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+      h2 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+      p { font-size: 1rem; padding: 0 1rem; }
+      .btn { padding: 0.8rem 2rem; font-size: 1rem; }
+      .welcome-section, .experiences-section, .testimonials-section, .how-it-works-section { padding: 4rem 1.5rem; }
+      .welcome-title, .experiences-title, .testimonials-title, .how-it-works-title { font-size: 2.1rem; }
+      .welcome-description, .welcome-tagline, .experiences-subtitle { font-size: 0.95rem; }
+      .get-in-touch-btn { padding: 0.8rem 2rem; font-size: 0.9rem; }
+      .experience-card { flex: 0 0 calc(100% / 2 - 1rem); }
+      .card-title { font-size: 1.8rem; }
+      #scroll-left { left: -15px; }
+      #scroll-right { right: -15px; }
+      .testimonial-quote-icon { width: 30px; height: 30px; }
+      .testimonial-card blockquote { font-size: 0.9rem; line-height: 1.6; max-width: 90%; }
+      .testimonial-card .author { font-size: 1rem; }
+      .testimonial-card .details { font-size: 0.8rem; }
+      .how-step h3 { font-size: 1.5rem; }
+      .how-step p { font-size: 1rem; }
+    }
+
+    @media (max-width: 480px) {
+      .logo { font-size: 1.8rem; }
+      .social-icons { right: 1rem; gap: 0.6rem; }
+      .social-icon { width: 35px; height: 35px; }
+      .social-icon svg { width: 16px; height: 16px; }
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      p { font-size: 0.9rem; }
+      .welcome-title, .experiences-title, .testimonials-title, .how-it-works-title { font-size: 1.7rem; letter-spacing: 2px; }
+      .welcome-description, .welcome-tagline, .experiences-subtitle { font-size: 0.88rem; }
+      .experience-card { flex: 0 0 85%; }
+      .scroll-btn { width: 40px; height: 40px; }
+      #scroll-left { left: 5px; }
+      #scroll-right { right: 5px; }
+      .testimonials-grid {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+      }
+      .testimonial-quote-icon { width: 25px; height: 25px; }
+      .testimonial-card blockquote { font-size: 0.85rem; }
+      .testimonial-card .author { font-size: 0.9rem; }
+      .testimonial-card .details { font-size: 0.75rem; }
+      .how-step h3 { font-size: 1.3rem; }
+      .how-step p { font-size: 0.9rem; }
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus styles for keyboard navigation */
+    .menu-icon:focus,
+    .nav-item:focus,
+    .btn:focus,
+    .btn-secondary:focus {
+      outline: 2px solid #00bfff;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+  </div>
+
+
+  <nav class="nav-container">
+    <div class="menu-icon" id="menuIcon" tabindex="0" role="button" aria-label="Toggle navigation menu">
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+    </div>
+    <div class="nav-menu" id="navMenu" role="menu">
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <a href="#hero" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">Home</a>
+          <a href="#welcome" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">About Us</a>
+          <div class="nav-item nav-experiences-group" style="position:relative;padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">
+            <a href="experience.html" class="nav-item experiences-title-link" role="menuitem" style="margin-bottom:0;color:#fff;">Our Experiences</a>
+          </div>
+          <a href="Reviews.html" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">Testimonials</a>
+          <a href="#how-it-works" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;border-bottom:1px solid rgba(255,255,255,0.13);color:#fff;">How It Works</a>
+          <a href="contact.html" class="nav-item" role="menuitem" style="padding:1rem 0 1rem 0.5rem;color:#00bfff;">Contact Us</a>
+        </div>
+    </div>
+  </nav>
+
+  <main>
+    <section id="hero">
+      <video src="final.mp4" autoplay loop muted poster="hero-poster.jpg" aria-label="Background video of travel destinations"></video>
+      <div class="overlay">
+        <div class="logo">VOYA</div>
+        <div class="content-wrapper">
+          <h1>हर सफ़र, एक <strong>नया राज़</strong></h1>
+          <h2>Every Journey, a Hidden Wonder</h2>
+          <p>Curated mystery travel experiences designed for the modern Indian explorer who seeks the extraordinary</p>
+          <a href="form.html"><button class="btn" aria-label="Start planning your secret adventure">Begin Your Journey</button></a>
+        </div>
+      </div>
+
+      <div class="social-icons">
+        <a href="https://www.instagram.com/indiatourism/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Visit India Tourism Instagram">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+        </a>
+        <a href="https://www.facebook.com/IncredibleIndia" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Visit India Tourism Facebook">
+          <svg viewBox="0 0 24 24">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <section id="welcome" class="welcome-section">
+      <div class="welcome-container">
+        <h2 class="welcome-title">WELCOME TO VOYA</h2>
+        <div class="welcome-content">
+          <p class="welcome-description">
+            Welcome to VOYA — your window to India's hidden gems. We craft surprise journeys that take you beyond the usual, into serene villages, vibrant cultures, and authentic local experiences. With <strong>end-to-end packages</strong> covering everything from flights and stays to local guides and food, every VOYA trip is a handcrafted adventure into the heart of real India.
+          </p>
+          <p class="welcome-tagline">
+            So, let's start your story. We'll plan. You'll experience. One envelope at a time.
+          </p>
+          <button class="get-in-touch-btn">GET IN TOUCH</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="experiences" class="experiences-section">
+        <div class="experiences-container">
+            <h2 class="experiences-title">Our Experiences</h2>
+            <p class="experiences-subtitle">Choose your vibe. We'll plan your tribe.</p>
+            <div class="carousel-wrapper">
+                <button id="scroll-left" class="scroll-btn" aria-label="Scroll left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <div class="experience-grid" id="experience-carousel">
+                    <div class="experience-card" style="background-image: url('1.jpg');">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Trekking Trails</h3>
+                            <p class="card-subtitle">Unplug in the Himalayas</p>
+                            <a href="experience.html"><button class="card-btn explore-more-btn" style="display:none;position:absolute;left:50%;bottom:2rem;transform:translateX(-50%);">Explore More</button></a>
+                        </div>
+                    </div>
+                    <div class="experience-card" style="background-image: url('2.jpg');">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Romantic Escapes</h3>
+                            <p class="card-subtitle">Couple-only secret getaways</p>
+                            <a href="experience.html"><button class="card-btn explore-more-btn" style="display:none;position:absolute;left:50%;bottom:2rem;transform:translateX(-50%);">Explore More</button></a>
+                        </div>
+                    </div>
+                    <div class="experience-card" style="background-image: url('3.jpeg');">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Culture & Craft</h3>
+                            <p class="card-subtitle">Live the folk, eat the soul</p>
+                            <a href="experience.html"><button class="card-btn explore-more-btn" style="display:none;position:absolute;left:50%;bottom:2rem;transform:translateX(-50%);">Explore More</button></a>
+                        </div>
+                    </div>
+                    <div class="experience-card" style="background-image: url('4.jpg');">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Tea & Temples</h3>
+                            <p class="card-subtitle">Peace in the North-East</p>
+                            <a href="experience.html"><button class="card-btn explore-more-btn" style="display:none;position:absolute;left:50%;bottom:2rem;transform:translateX(-50%);">Explore More</button></a>
+                        </div>
+                    </div>
+                    <div class="experience-card" style="background-image: url('5.jpg');">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Jungle Whispers</h3>
+                            <p class="card-subtitle">Into the wild & beyond</p>
+                            <a href="experience.html"><button class="card-btn explore-more-btn" style="display:none;position:absolute;left:50%;bottom:2rem;transform:translateX(-50%);">Explore More</button></a>
+                        </div>
+                    </div>
+                    <div class="experience-card" style="background-image: url('6.jpg');">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Mystery Package</h3>
+                            <p class="card-subtitle">Let us surprise you</p>
+                            <a href="experience.html"><button class="card-btn explore-more-btn" style="display:none;position:absolute;left:50%;bottom:2rem;transform:translateX(-50%);">Explore More</button></a>
+                        </div>
+                    </div>
+                </div>
+                <button id="scroll-right" class="scroll-btn" aria-label="Scroll right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section id="testimonials" class="testimonials-section">
+        <div class="testimonials-container">
+            <h2 class="testimonials-title">Words From Our Voyagers</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <img src="12.png" class="testimonial-quote-icon" alt="Quotation mark">
+                    <blockquote>"Honestly, we were tired of the usual honeymoon spots. VOYA gave us the surprise of a lifetime in Kerala's backwaters! From the private houseboat to the delicious sadhya, every detail was pure magic. A truly unforgettable start to our life together."</blockquote>
+                    <footer>
+                        <div class="author">Priya & Rohan</div>
+                        <div class="details">Honeymoon in Kerala</div>
+                    </footer>
+                </div>
+                <div class="testimonial-card">
+                    <img src="12.png" class="testimonial-quote-icon" alt="Quotation mark">
+                    <blockquote>"As a solo traveller, safety is always on my mind. With VOYA, I just had to pack my bags. They sent me on a spiritual journey to the Himalayas that was simply life-changing. Waking up to the mountains, the peace... it felt like the universe was guiding me."</blockquote>
+                    <footer>
+                        <div class="author">Aisha</div>
+                        <div class="details">Solo Trip to the Himalayas</div>
+                    </footer>
+                </div>
+                <div class="testimonial-card">
+                    <img src="12.png" class="testimonial-quote-icon" alt="Quotation mark">
+                    <blockquote>"I wanted a special trip with my son, away from screens. VOYA sent us to explore the hidden forts of Rajasthan. It wasn't just a holiday; it was a story unfolding. A priceless memory. Dhanyavaad, VOYA team."</blockquote>
+                    <footer>
+                        <div class="author">Mr. Sharma & Aarav</div>
+                        <div class="details">Family Trip to Rajasthan</div>
+                    </footer>
+                </div>
+            </div>
+            <a href="Reviews.html"><button class="btn-secondary">Explore More Stories</button></a>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="how-it-works-container">
+            <h2 class="how-it-works-title" style="margin-top:0.5rem;font-family:'Playfair Display',serif;font-size:2.1rem;font-weight:500;letter-spacing:1px;">
+              How Your <span id="journey-word" style="display:inline-block;transition:opacity 0.5s;">Journey</span> Unfolds
+            </h2>
+            <div style="height:3.2rem;"></div>
+            <div class="how-it-works-steps">
+                <div class="how-step">
+                    <h3>Step 1: Share Your Dream</h3>
+                    <p>Tell us your travel style—are you seeking adventure, romance, or cultural immersion? We listen to your desires to craft the perfect surprise.</p>
+                </div>
+                <div class="how-step">
+                    <h3>Step 2: Trust the Process</h3>
+                    <p>This is where the magic happens. We meticulously plan every detail, from hidden-gem stays to unique local experiences, all kept secret from you.</p>
+                </div>
+                <div class="how-step">
+                    <h3>Step 3: Reveal Your Adventure</h3>
+                    <p>Just before you depart, you'll receive your first clue. The rest of your bespoke journey is revealed one envelope at a time, creating a story you'll never forget.</p>
+                </div>
+            </div>
+            <a href="form.html"><button class="begin-journey-btn" style="margin:2.5rem auto 0 auto;display:block;padding:0.7rem 2rem;font-family:'Inter',sans-serif;font-size:1rem;font-weight:500;color:#fff;background:#000;border:none;border-radius:50px;box-shadow:0 4px 15px rgba(0,0,0,0.18);cursor:pointer;letter-spacing:1px;transition:all 0.3s;position:relative;overflow:hidden;">Begin Your Journey</button></a>
+            </div>
+        </div>
+    </section>
+
+  </main>
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>About VOYA</h4>
+          <p style="text-align:left;">Crafting surprise journeys that transform how you experience India. Every trip is a story waiting to unfold.</p>
+          <div class="footer-social">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter">
+              <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#welcome">About Us</a></li>
+            <li><a href="#experiences">Our Experiences</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact Us</h4>
+          <ul class="contact-info">
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 0C7.802 0 4 3.403 4 7.602 4 11.8 7.469 16.812 12 24c4.531-7.188 8-12.2 8-16.398C20 3.403 16.199 0 12 0zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+              Mumbai, Maharashtra, India
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+              hello@voya.com
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1.02 1.02 0 00-1.02.24l-2.2 2.2a15.045 15.045 0 01-6.59-6.59l2.2-2.21a.96.96 0 00.25-1A11.36 11.36 0 018.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1zM19 12h2a9 9 0 00-9-9v2c3.87 0 7 3.13 7 7z"/></svg>
+              +91 98765 43210
+            </li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Newsletter</h4>
+          <p>Subscribe to receive updates about new destinations and special offers.</p>
+          <form class="newsletter-form" action="#" method="POST">
+            <input type="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 VOYA. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="d1.docx" target="_blank">Privacy Policy</a>
+          <a href="d2.docx" target="_blank">Terms of Service</a>
+          <a href="d3.docx" target="_blank">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <style>
+    .site-footer {
+      background-color: #0c0c0c;
+      color: #fff;
+      padding: 5rem 2rem 2rem;
+    }
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    .footer-section h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+    .footer-section p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+    }
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+    .footer-social a {
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+    .footer-social a:hover {
+      color: #00bfff;
+    }
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-section ul li {
+      margin-bottom: 0.8rem;
+    }
+    .footer-section ul a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-size: 0.9rem;
+    }
+    .footer-section ul a:hover {
+      color: #fff;
+    }
+    .contact-info li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .contact-info svg {
+      flex-shrink: 0;
+    }
+    .newsletter-form {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .newsletter-form input {
+      flex: 1;
+      padding: 0.8rem;
+      border: 1px solid #333;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .newsletter-form input:focus {
+      outline: none;
+      border-color: #00bfff;
+    }
+    .newsletter-form button {
+      padding: 0.8rem 1.5rem;
+      background: #00bfff;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .newsletter-form button:hover {
+      background: #0099cc;
+    }
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      color: #aaa;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .footer-links a:hover {
+      color: #fff;
+    }
+    @media (max-width: 1024px) {
+      .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      .footer-links {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+  <script>
+    // Loading animation
+    window.addEventListener('load', function() {
+      const loading = document.getElementById('loading');
+      setTimeout(() => {
+        loading.classList.add('hidden');
+      }, 1000);
+    });
+
+
+
+    // Animated journey word
+    const journeyWords = [
+      "Journey", "Voyage", "Travel", "Adventure", "Expedition", "Odyssey", "Quest", "Excursion", "Sojourn", "Exploration",
+      "यात्रा", "सफ़र", "अभियान", "अविस्मरणीय", "खोज", "अन्वेषण", "सैर", "यात्रा का अनुभव", "मंज़िल", "गमन"
+    ];
+    let journeyIndex = 0;
+    function cycleJourneyWord() {
+      const el = document.getElementById('journey-word');
+      if (!el) return;
+      el.style.opacity = 0;
+      setTimeout(() => {
+        journeyIndex = (journeyIndex + 1) % journeyWords.length;
+        el.textContent = journeyWords[journeyIndex];
+        el.style.opacity = 1;
+      }, 500);
+    }
+    setInterval(cycleJourneyWord, 1800);
+
+    // Navigation functionality
+    const menuIcon = document.getElementById('menuIcon');
+    const navMenu = document.getElementById('navMenu');
+    let isMenuOpen = false;
+
+    function toggleMenu() {
+      isMenuOpen = !isMenuOpen;
+      menuIcon.classList.toggle('active', isMenuOpen);
+      navMenu.classList.toggle('active', isMenuOpen);
+
+      menuIcon.setAttribute('aria-expanded', isMenuOpen);
+      navMenu.setAttribute('aria-hidden', !isMenuOpen);
+    }
+
+    menuIcon.addEventListener('click', toggleMenu);
+
+    menuIcon.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+      }
+    });
+
+    document.addEventListener('click', function(e) {
+      if (!menuIcon.contains(e.target) && !navMenu.contains(e.target) && isMenuOpen) {
+        toggleMenu();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && isMenuOpen) {
+        toggleMenu();
+      }
+    });
+
+    // Button click feedback
+    document.querySelectorAll('.btn, .get-in-touch-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            this.style.transform = 'translateY(-2px) scale(0.98)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(0) scale(1)';
+            }, 150);
+        });
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('.nav-item').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetElement = document.querySelector(href);
+
+            if (targetElement) {
+              if (isMenuOpen) {
+                toggleMenu();
+              }
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+      });
+    });
+
+    // Show 'Explore More' button on hover for experience cards
+    document.querySelectorAll('.experience-card').forEach(card => {
+      const btn = card.querySelector('.explore-more-btn');
+      card.addEventListener('mouseenter', () => {
+        if (btn) btn.style.display = 'block';
+      });
+      card.addEventListener('mouseleave', () => {
+        if (btn) btn.style.display = 'none';
+      });
+    });
+
+    // Intersection Observer for fade-in animations
+    const scrollObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Observe all elements that should fade in
+    const elementsToAnimate = document.querySelectorAll('.experience-card, .testimonial-card, .how-it-works-title, .how-step');
+    elementsToAnimate.forEach((el, index) => {
+        let delay = 0;
+        if (el.classList.contains('testimonial-card') || el.classList.contains('experience-card')) {
+            const gridColumnCount = window.getComputedStyle(el.parentElement).gridTemplateColumns.split(' ').length;
+            delay = index % gridColumnCount;
+        } else if (el.classList.contains('how-step')) {
+            delay = index - 1; 
+        }
+        el.style.transitionDelay = `${delay * 150}ms`;
+        scrollObserver.observe(el);
+    });
+
+    // Carousel functionality
+    const carousel = document.getElementById('experience-carousel');
+    const leftBtn = document.getElementById('scroll-left');
+    const rightBtn = document.getElementById('scroll-right');
+
+    const updateButtonState = () => {
+        if (!carousel) return;
+        const scrollLeft = carousel.scrollLeft;
+        const scrollWidth = carousel.scrollWidth;
+        const clientWidth = carousel.clientWidth;
+        const tolerance = 5;
+
+        leftBtn.classList.toggle('hidden', scrollLeft <= 0);
+        rightBtn.classList.toggle('hidden', scrollLeft + clientWidth >= scrollWidth - tolerance);
+    };
+
+    if (carousel) {
+      leftBtn.addEventListener('click', () => {
+          const cardWidth = carousel.querySelector('.experience-card').offsetWidth;
+          carousel.scrollLeft -= cardWidth + 32;
+      });
+
+      rightBtn.addEventListener('click', () => {
+          const cardWidth = carousel.querySelector('.experience-card').offsetWidth;
+          carousel.scrollLeft += cardWidth + 32;
+      });
+
+      carousel.addEventListener('scroll', updateButtonState);
+      window.addEventListener('load', updateButtonState);
+      window.addEventListener('resize', updateButtonState);
+    }
+
+    // Experiences submenu hover logic
+    document.addEventListener('DOMContentLoaded', function() {
+      var expGroup = document.querySelector('.nav-experiences-group');
+      var submenu = expGroup ? expGroup.querySelector('.experiences-submenu') : null;
+      if (expGroup && submenu) {
+        expGroup.addEventListener('mouseenter', function() {
+          submenu.style.display = 'block';
+        });
+        expGroup.addEventListener('mouseleave', function() {
+          submenu.style.display = 'none';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

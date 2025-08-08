@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - VOYA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; }
+        .header-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1rem 2rem; display: flex; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .logo {
+            font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700;
+            color: white; text-decoration: none; letter-spacing: 2px; position: relative; z-index: 2;
+        }
+        .nav-button {
+            background-color: #00bcd4; color: white; padding: 10px 20px; border: none;
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600;
+            text-transform: uppercase; cursor: pointer; transition: background-color 0.3s ease;
+            text-decoration: none; display: inline-block;
+        }
+        .nav-button:hover { background-color: #00acc1; }
+        .about-section {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 80vh;
+            background: #fff; margin-top: 80px;
+        }
+        .about-content {
+            padding: 4rem 3rem; display: flex; flex-direction: column; justify-content: center;
+        }
+        .about-title {
+            font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700;
+            color: #000; margin-bottom: 1.5rem; text-align: left;
+        }
+        .about-content p {
+            font-family: 'Inter', sans-serif; font-size: 1.15rem; color: #333;
+            margin-bottom: 1.5rem; line-height: 1.7;
+        }
+        .about-content .highlight { color: #00bcd4; font-weight: 500; }
+        .about-content .cta-button {
+            background-color: #000; color: white; padding: 12px 24px; border: none;
+            font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer;
+            transition: all 0.3s ease; text-decoration: none; display: inline-block; margin-top: 2rem;
+        }
+        .about-content .cta-button:hover { background-color: #333; transform: translateY(-2px); }
+        .about-image { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .about-img-container { width: 100%; height: 100%; overflow: hidden; }
+        .founders-section {
+            background: #f8f9fa; padding: 4rem 2rem; text-align: center;
+        }
+        .founders-title {
+            font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;
+            color: #000; margin-bottom: 2rem;
+        }
+        .founders-list {
+            display: flex; justify-content: center; gap: 4rem; width: 100%; max-width: 900px; margin: 0 auto; /* Increased gap here */
+        }
+        .founder-card {
+            background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            padding: 1.5rem; width: 30%; /* Equal width distribution */
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .founder-img {
+            width: 100%; height: auto; aspect-ratio: 1/1; object-fit: cover; /* Square images */
+            margin-bottom: 1rem; border: 3px solid #00bcd4; border-radius: 0; /* Square off */
+        }
+        .founder-name {
+            font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 600;
+            color: #333; margin-bottom: 0.5rem;
+        }
+        .founder-role { font-size: 0.95rem; color: #666; }
+        .founder-description {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; color: #555;
+            margin-top: 1rem; text-align: center;
+        }
+        .social-links {
+            position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 1rem; z-index: 50;
+        }
+        .social-link {
+            width: 40px; height: 40px; background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; color: #333; font-size: 1.2rem; transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .social-link:hover { background-color: #00bcd4; color: white; transform: scale(1.1); }
+        .site-footer {
+            background-color: #0c0c0c; color: #fff; padding: 5rem 2rem 2rem;
+        }
+        .footer-container { max-width: 1200px; margin: 0 auto; }
+        .footer-content {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 3rem; margin-bottom: 3rem;
+        }
+        .footer-section h4 {
+            font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1.5rem; color: #fff;
+        }
+        .footer-section p {
+            font-size: 0.9rem; line-height: 1.6; color: #aaa; margin-bottom: 1.5rem;
+        }
+        .footer-social { display: flex; gap: 1rem; }
+        .footer-social a { color: #fff; transition: color 0.3s ease; }
+        .footer-social a:hover { color: #00bfff; }
+        .footer-section ul { list-style: none; padding: 0; }
+        .footer-section ul li { margin-bottom: 0.8rem; }
+        .footer-section ul a {
+            color: #aaa; text-decoration: none; transition: color 0.3s ease; font-size: 0.9rem;
+        }
+        .footer-section ul a:hover { color: #fff; }
+        .contact-info li {
+            display: flex; align-items: center; gap: 0.8rem; color: #aaa; font-size: 0.9rem;
+        }
+        .contact-info svg { flex-shrink: 0; }
+        .newsletter-form { display: flex; gap: 0.5rem; }
+        .newsletter-form input {
+            flex: 1; padding: 0.8rem; border: 1px solid #333; border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05); color: #fff; font-size: 0.9rem;
+        }
+        .newsletter-form input:focus { outline: none; border-color: #00bfff; }
+        .newsletter-form button {
+            padding: 0.8rem 1.5rem; background: #00bfff; border: none; border-radius: 4px;
+            color: #fff; font-weight: 500; cursor: pointer; transition: background-color 0.3s ease;
+        }
+        .newsletter-form button:hover { background: #0099cc; }
+        .footer-bottom {
+            padding-top: 2rem; border-top: 1px solid #333; display: flex;
+            justify-content: space-between; align-items: center; font-size: 0.9rem; color: #aaa;
+        }
+        .footer-links { display: flex; gap: 2rem; }
+        .footer-links a {
+            color: #aaa; text-decoration: none; transition: color 0.3s ease;
+        }
+        .footer-links a:hover { color: #fff; }
+        @media (max-width: 1024px) {
+            .footer-content { grid-template-columns: repeat(2, 1fr); }
+            .about-section { grid-template-columns: 1fr; }
+            .about-img-container { height: 300px; }
+        }
+        @media (max-width: 768px) {
+            .footer-content { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; text-align: center; gap: 1rem; }
+            .footer-links { flex-direction: column; gap: 1rem; }
+            .about-section { grid-template-columns: 1fr; }
+            .about-content { padding: 2rem 1rem; }
+            .about-title { font-size: 2rem; }
+            .about-img-container { height: 200px; }
+            .social-links {
+                position: static; flex-direction: row; justify-content: center;
+                transform: none; margin: 2rem 0;
+            }
+            .founders-list { flex-direction: column; align-items: center; gap: 2rem; } /* Added gap for mobile */
+            .founder-card { width: 80%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="header-nav">
+        <div style="flex:1;display:flex;justify-content:flex-start;">
+            <div class="menu-icon" id="menuIcon" tabindex="0" role="button" aria-label="Toggle navigation menu" style="width:30px;height:24px;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.3s ease;">
+                <div style="width:100%;height:3px;background:white;transition:all 0.3s ease;transform-origin:center;"></div>
+                <div style="width:100%;height:3px;background:white;transition:all 0.3s ease;transform-origin:center;"></div>
+                <div style="width:100%;height:3px;background:white;transition:all 0.3s ease;transform-origin:center;"></div>
+            </div>
+        </div>
+        <div style="flex:2;display:flex;justify-content:center;">
+            <a href="index.html" class="logo" style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:600;color:white;letter-spacing:3px;text-shadow:2px 2px 4px rgba(0,0,0,0.5);">VOYA</a>
+        </div>
+        <div style="flex:1;"></div>
+        <div class="nav-menu" id="navMenu" role="menu" style="position:absolute;right:2rem;top:50%;transform:translateY(-50%);display:none;flex-direction:row;gap:2rem;background:rgba(0,0,0,0.8);padding:1rem 2rem;border-radius:30px;">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="Aboutus.html" class="nav-button">About Us</a>
+            <a href="form.html" class="nav-button">Begin Your Journey</a>
+            <a href="experience.html" class="nav-button">Our Experiences</a>
+            <a href="Reviews.html" class="nav-button">Testimonials</a>
+            <a href="contact.html" class="nav-button">Contact Us</a>
+        </div>
+    </nav>
+    <div style="height:80px;"></div>
+
+    <!-- About Us Section -->
+    <section class="about-section">
+        <div class="about-content">
+            <h1 class="about-title">What is a Mystery Vacation?</h1>
+            <p>
+                A mystery vacation is a trip you don’t know anything about. No clue about the destination, activities or even accommodation. You only know that you’re leaving and that it’s going to be <span class="highlight">epic</span>. Everything else is happening little by little, and you’re discovering it along the way.
+            </p>
+            <p>
+                Do you wish you could jump on a mystery vacation straight away? Well, <span class="highlight">you can start creating your dream surprise vacation right now!</span>
+            </p>
+            <p>
+                In case you’re not convinced yet, we will make you change your mind by digging deeper into this exciting new travel trend!
+            </p>
+            <a href="form.html"><button class="btn" aria-label="Start planning your secret adventure" style="background-color:#00bcd4;color:#fff;padding:12px 32px;font-size:1.1rem;font-family:'Inter',sans-serif;font-weight:600;border:none;border-radius:6px;box-shadow:0 2px 8px rgba(0,188,212,0.15);cursor:pointer;transition:background 0.3s,transform 0.2s;">Begin Your Journey</button></a>
+        </div>
+        <div class="about-img-container">
+            <img src="50.jpg" alt="Mystery Vacation Beach" class="about-image">
+        </div>
+    </section>
+
+    <!-- Founders Section -->
+    <section class="founders-section">
+        <h2 class="founders-title">Meet the Founders</h2>
+        <div class="founders-list">
+            <div class="founder-card">
+                <img src="founder1.jpeg" alt="Founder 1" class="founder-img">
+                <div class="founder-name">Nishant Ingle </div>
+                <div class="founder-role">Co-Founder</div>
+                <button class="read-more-btn" style="margin-top:1rem;background:#00bcd4;color:#fff;padding:8px 18px;border:none;border-radius:4px;font-size:0.95rem;cursor:pointer;transition:background 0.3s;">Read More</button>
+                <p class="founder-description" style="display:none;">Nishant is passionate about creating unique travel experiences.</p>
+            </div>
+            <div class="founder-card">
+                <img src="founder2.png" alt="Founder 2" class="founder-img">
+                <div class="founder-name">Aryan Sethia </div>
+                <div class="founder-role">Co-Founder</div>
+                <button class="read-more-btn" style="margin-top:1rem;background:#00bcd4;color:#fff;padding:8px 18px;border:none;border-radius:4px;font-size:0.95rem;cursor:pointer;transition:background 0.3s;">Read More</button>
+                <p class="founder-description" style="display:none;">Aryan focuses on the logistics and planning of our trips.</p>
+            </div>
+            <div class="founder-card">
+                <img src="founder3.jpeg" alt="Founder 3" class="founder-img">
+                <div class="founder-name">Keshav Sahu</div>
+                <div class="founder-role">Co-Founder</div>
+                <button class="read-more-btn" style="margin-top:1rem;background:#00bcd4;color:#fff;padding:8px 18px;border:none;border-radius:4px;font-size:0.95rem;cursor:pointer;transition:background 0.3s;">Read More</button>
+                <p class="founder-description" style="display:none;">Keshav handles marketing and customer relations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Links -->
+    <div class="social-links">
+        <a href="#" class="social-link" title="LinkedIn"><span>in</span></a>
+        <a href="#" class="social-link" title="Facebook"><span>f</span></a>
+        <a href="#" class="social-link" title="Instagram"><span>📷</span></a>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>About VOYA</h4>
+            <p style="text-align:left;">Crafting surprise journeys that transform how you experience. Every trip is a story waiting to unfold.</p>
+            <div class="footer-social">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram"></a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook"></a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter"></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#hero">Home</a></li>
+              <li><a href="#about-section">About Us</a></li>
+              <li><a href="#experiences">Our Experiences</a></li>
+              <li><a href="#testimonials">Testimonials</a></li>
+              <li><a href="#how-it-works">How It Works</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Contact Us</h4>
+            <ul class="contact-info">
+              <li>IIM Rohtak, Rohtak, Haryana, India</li>
+              <li>hello@voyaindia.com</li>
+              <li>+91 9167173409</li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Newsletter</h4>
+            <p>Subscribe to receive updates about new destinations and special offers.</p>
+            <form class="newsletter-form" action="#" method="POST">
+              <input type="email" placeholder="Enter your email" required>
+              <button type="submit">Subscribe</button>
+            </form>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2025 VOYA. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="privacy.docx" target="_blank">Privacy Policy</a>
+            <a href="terms.docx" target="_blank">Terms of Service</a>
+            <a href="cookie.docx" target="_blank">Cookie Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+        // Founder card Read More pop-up
+        document.querySelectorAll('.read-more-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const desc = btn.nextElementSibling;
+                if (desc.style.display === 'block') {
+                    desc.style.display = 'none';
+                } else {
+                    desc.style.display = 'block';
+                    desc.style.background = '#e0f7fa';
+                    desc.style.color = '#00796b';
+                    desc.style.padding = '1rem';
+                    desc.style.borderRadius = '8px';
+                    desc.style.position = 'absolute';
+                    desc.style.top = '100%';
+                    desc.style.left = '50%';
+                    desc.style.transform = 'translateX(-50%)';
+                    desc.style.zIndex = '10';
+                    desc.style.boxShadow = '0 4px 18px rgba(0,188,212,0.13)';
+                }
+            });
+        });
+        // Hamburger menu toggle
+        const menuIcon = document.getElementById('menuIcon');
+        const navMenu = document.getElementById('navMenu');
+        menuIcon.addEventListener('click', function() {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+            }
+        });
+        // Hide/show navbar on scroll
+        let lastScrollTop = 0;
+        const navbar = document.querySelector('.header-nav');
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop) {
+                navbar.style.transform = 'translateY(-100%)';
+                navbar.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1)';
+            } else {
+                navbar.style.transform = 'translateY(0)';
+                navbar.style.transition = 'transform 0.4s cubic-bezier(.4,0,.2,1)';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+    </script>
+</body>
+</html>

@@ -498,12 +498,6 @@
       menu.classList.toggle('hidden');
     });
 
-    // Form submission
-    document.getElementById('travel-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert('Thank you for your enquiry! Our travel expert will contact you soon.');
-      this.reset();
-    });
 
     // Set current year in footer
     document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -525,5 +519,61 @@
       lastScrollTop = st <= 0 ? 0 : st;
     }, false);
   </script>
+  <script>
+    (function(){
+      const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE"; // paste the Apps Script /exec URL
+
+      const form = document.getElementById('travel-form');
+      if (!form) return;
+
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+
+        // honeypot check (invisible to users)
+        const hp = form.querySelector('input[name="hp_field"]');
+        if (hp && hp.value.trim() !== '') return; // bot likely
+
+        const fd = new FormData(form);
+
+        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+        if (submitBtn) submitBtn.disabled = true;
+
+        try {
+          const resp = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: fd,
+            mode: 'cors'
+          });
+
+          // Try to parse JSON response
+          let json = {};
+          try { json = await resp.json(); } catch(e){}
+
+          if (json.result === 'success') {
+            // show a small message without changing your layout
+            let msg = document.getElementById('form-msg');
+            if (!msg) {
+              msg = document.createElement('div');
+              msg.id = 'form-msg';
+              msg.style.marginTop = '1rem';
+              form.appendChild(msg);
+            }
+            msg.textContent = 'Thanks — your submission was received.';
+            form.reset();
+          } else if (json.result === 'spam') {
+            console.warn('Honeypot triggered (spam).');
+          } else {
+            alert('Submission failed. Please try again later.');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Network error. Please try again later.');
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      });
+    })();
+  </script>
+
 </body>
 </html>

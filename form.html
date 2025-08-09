@@ -488,90 +488,136 @@
       }
     }
   </style>
-
   <script>
-    // Mobile menu toggle
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-    });
+      document.addEventListener('DOMContentLoaded', function () {
+        // === Config ===
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_G9xVnD1XmWwCrusDpmZ3iq9V-HDvSdd6BfiXiclVhn7QD0EZJ3yWyHyufBJXHBc/exec"; // <-- put your Apps Script /exec URL here
 
-
-    // Set current year in footer
-    document.getElementById('current-year').textContent = new Date().getFullYear();
-
-    // Hide nav on scroll down, show on scroll up
-    let lastScrollTop = 0;
-    const nav = document.querySelector('nav');
-    window.addEventListener('scroll', function() {
-      const st = window.pageYOffset || document.documentElement.scrollTop;
-      if (st > lastScrollTop && st > 80) {
-        // Scrolling down
-        nav.style.transform = 'translateY(-100%)';
-        nav.style.transition = 'transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)';
-      } else {
-        // Scrolling up
-        nav.style.transform = 'translateY(0)';
-        nav.style.transition = 'transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)';
-      }
-      lastScrollTop = st <= 0 ? 0 : st;
-    }, false);
-  </script>
-  <script>
-    (function(){
-      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_G9xVnD1XmWwCrusDpmZ3iq9V-HDvSdd6BfiXiclVhn7QD0EZJ3yWyHyufBJXHBc/exec"; // paste the Apps Script /exec URL
-
-      const form = document.getElementById('travel-form');
-      if (!form) return;
-
-      form.addEventListener('submit', async function(e){
-        e.preventDefault();
-
-        // honeypot check (invisible to users)
-        const hp = form.querySelector('input[name="hp_field"]');
-        if (hp && hp.value.trim() !== '') return; // bot likely
-
-        const fd = new FormData(form);
-
-        const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
-        if (submitBtn) submitBtn.disabled = true;
-
-        try {
-          const resp = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: fd,
-            mode: 'cors'
+        // === Mobile menu toggle (safe guard) ===
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuToggle && mobileMenu) {
+          menuToggle.addEventListener('click', function () {
+            mobileMenu.classList.toggle('hidden');
           });
+        }
 
-          // Try to parse JSON response
-          let json = {};
-          try { json = await resp.json(); } catch(e){}
+        // === Set current year if element exists ===
+        const yearEl = document.getElementById('current-year');
+        if (yearEl) {
+          yearEl.textContent = new Date().getFullYear();
+        }
 
-          if (json.result === 'success') {
-            // show a small message without changing your layout
-            let msg = document.getElementById('form-msg');
-            if (!msg) {
-              msg = document.createElement('div');
-              msg.id = 'form-msg';
-              msg.style.marginTop = '1rem';
-              form.appendChild(msg);
+        // === Hide nav on scroll down, show on scroll up ===
+        (function () {
+          let lastScrollTop = 0;
+          const nav = document.querySelector('nav');
+          if (!nav) return;
+          window.addEventListener('scroll', function () {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop && st > 80) {
+              nav.style.transform = 'translateY(-100%)';
+              nav.style.transition = 'transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)';
+            } else {
+              nav.style.transform = 'translateY(0)';
+              nav.style.transition = 'transform 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)';
             }
-            msg.textContent = 'Thanks — your submission was received.';
-            form.reset();
-          } else if (json.result === 'spam') {
-            console.warn('Honeypot triggered (spam).');
-          } else {
-            alert('Submission failed. Please try again later.');
+            lastScrollTop = st <= 0 ? 0 : st;
+          }, false);
+        })();
+
+        // === Form handling + modal ===
+        const form = document.getElementById('travel-form');
+        const modal = document.getElementById('voya-thankyou-modal');
+        const closeBtn = document.getElementById('voya-thankyou-close');
+
+        function showModal() {
+          if (!modal) return;
+          modal.classList.remove('hidden');
+          if (closeBtn) closeBtn.focus();
+        }
+        function hideModal() {
+          if (!modal) return;
+          modal.classList.add('hidden');
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function () {
+            hideModal();
+            if (form) {
+              form.reset();
+              form.scrollIntoView({ behavior: 'smooth' });
+            }
+          });
+        }
+
+        // close modal on Esc
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            hideModal();
+            if (form) form.reset();
           }
-        } catch (err) {
-          console.error(err);
-          alert('Network error. Please try again later.');
-        } finally {
-          if (submitBtn) submitBtn.disabled = false;
+        });
+
+        if (form) {
+          form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Honeypot: invisible field. If filled, abort silently.
+            const hp = form.querySelector('input[name="hp_field"]');
+            if (hp && hp.value.trim() !== '') {
+              console.warn('Honeypot triggered. Aborting submission.');
+              return;
+            }
+
+            const fd = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
+            try {
+              const resp = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: fd,
+                mode: 'cors'
+              });
+
+              let json = {};
+              try { json = await resp.json(); } catch (err) { /* ignore non-json */ }
+
+              if (resp.ok && json.result === 'success') {
+                showModal();
+              } else if (resp.ok && json.result === 'spam') {
+                console.warn('Submission flagged as spam.');
+                // optionally show confirmation
+                showModal();
+              } else {
+                alert('Submission failed. Please try again later.');
+              }
+            } catch (err) {
+              console.error('Submission error:', err);
+              alert('Network error. Please try again later.');
+            } finally {
+              if (submitBtn) submitBtn.disabled = false;
+            }
+          });
         }
       });
-    })();
   </script>
+
+  
+
+  <!-- Thank-you modal (hidden by default) -->
+  <div id="voya-thankyou-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div class="px-6 py-6 text-center">
+        <h3 class="text-xl font-semibold mb-2">Thank you!</h3>
+        <p class="text-sm text-gray-600 mb-4">Thanks for your response. We will get back to you shortly.</p>
+        <button id="voya-thankyou-close" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>

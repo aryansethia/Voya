@@ -226,6 +226,70 @@
             .founders-list { flex-direction: column; align-items: center; gap: 2rem; } /* Added gap for mobile */
             .founder-card { width: 80%; }
         }
+        /* Location Section Styles */
+        .location-section {
+            background: #111;
+            padding: 60px 0 60px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .location-content {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .location-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00bcd4;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,188,212,0.15);
+            letter-spacing: 2px;
+        }
+        .location-content p {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            color: #e0f7fa;
+            font-weight: 400;
+            margin-bottom: 0;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .map-container {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            overflow: hidden;
+            max-width: 1000px;
+            width: 90vw;
+            background: #000;
+            padding: 16px;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 500px;
+            border-radius: 12px;
+            background: #000;
+        }
+        @media (max-width: 1100px) {
+            .map-container iframe {
+                height: 350px;
+            }
+        }
+        @media (max-width: 600px) {
+            .location-title {
+                font-size: 1.5rem;
+            }
+            .location-content p {
+                font-size: 1rem;
+            }
+            .map-container iframe {
+                height: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -306,6 +370,17 @@
                 <p class="founder-description">Keshav connects VOYA with travelers and is committed to building lasting relationships.</p>
             </div>
         </div>
+    </section>
+
+    <!-- Location Section -->
+    <section class="location-section">
+      <div class="location-content">
+        <h2 class="location-title">Our Location</h2>
+        <p>Visit us at B-21, One Lodha Place, Mumbai</p>
+      </div>
+      <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3772.4056528132814!2d72.82571977455927!3d19.0018384821875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7cfe902cf8005%3A0x564f469b2595aa90!2sOne%20Lodha%20Place!5e0!3m2!1sen!2sin!4v1754896462564!5m2!1sen!2sin" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
     </section>
 
     <!-- Social Links -->

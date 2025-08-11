@@ -443,6 +443,63 @@
                 margin: 2rem 0;
             }
         }
+        /* Navigation Menu Styles */
+.nav-menu {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    background: rgba(0,0,0,0.95);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    border-radius: 0 0 16px 16px;
+    padding: 0;
+    z-index: 9999;
+}
+.nav-menu .nav-button {
+    width: 100%;
+    text-align: left;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    background: none;
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s, color 0.3s;
+}
+.nav-menu .nav-button:hover {
+    background: #00bcd4;
+    color: #fff;
+}
+.nav-menu .nav-button:last-child {
+    border-bottom: none;
+}
+.nav-button {
+    background: none;
+    color: #fff;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    text-decoration: none;
+    display: block;
+}
+@media (max-width: 768px) {
+    .nav-menu {
+        top: 60px;
+    }
+    .nav-menu .nav-button {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -454,7 +511,7 @@
             <div class="menu-line" style="width:30px;height:4px;background:#fff;border-radius:2px;"></div>
         </div>
         <a href="index.html" class="logo" style="color:white;position:relative;z-index:2;">VOYA</a>
-        <div class="nav-menu" id="navMenu" role="menu" style="position:absolute;right:2rem;top:50%;transform:translateY(-50%);display:none;flex-direction:row;gap:2rem;background:rgba(0,0,0,0.8);padding:1rem 2rem;border-radius:30px;">
+        <div class="nav-menu" id="navMenu" role="menu">
             <a href="index.html" class="nav-button">Home</a>
             <a href="Aboutus.html" class="nav-button">About Us</a>
             <a href="form.html" class="nav-button">Begin Your Journey</a>
@@ -580,6 +637,12 @@
                 navMenu.style.display = 'flex';
             }
         });
+        // Close menu when a nav link is clicked
+    document.querySelectorAll('.nav-menu .nav-button').forEach(link => {
+        link.addEventListener('click', function() {
+            navMenu.style.display = 'none';
+        });
+    });
 
         // Hide/show navbar on scroll
         let lastScrollTop = 0;

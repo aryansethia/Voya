@@ -1453,7 +1453,7 @@
             const json = await resp.json().catch(()=>({}));
 
             if (resp.ok && json.result === 'success') {
-              msg.style.color = '#059669'; // green
+              msg.style.color = '#FFFFFF';
               msg.textContent = 'Thanks — you are subscribed! Check your inbox for a confirmation email.';
               msg.style.display = 'block';
               form.reset();

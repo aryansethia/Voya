@@ -72,9 +72,10 @@
   </nav>
 
   <section class="relative h-screen flex items-center justify-center overflow-hidden">
-    <video autoplay loop muted playsinline class="absolute w-full h-full object-cover">
+    <video autoplay loop muted playsinline class="absolute w-full h-full object-cover" aria-label="Background video showing travel destinations for VOYA">
       <source src="https://res.cloudinary.com/ddiofei79/video/upload/v1754638247/18_z9oye1.mp4" type="video/mp4">
-      Your browser does not support the video tag.
+      <track kind="descriptions" src="" srclang="en" label="Video description for visually impaired users">
+      Your browser does not support the video tag. This video shows beautiful travel destinations and experiences curated by VOYA.
     </video>
     
     <div class="absolute inset-0 bg-black bg-opacity-40"></div>
@@ -111,22 +112,26 @@
             <!-- Honeypot (hidden from users, visible to bots) -->
             <input type="text" name="hp_field" id="hp_field" style="display:none" autocomplete="off" tabindex="-1">
               <div>
-                <label for="firstName" class="block text-sm font-medium text-gray-700">First name*</label>
+                <label for="firstName" class="block text-sm font-medium text-gray-700">First name* <span class="sr-only">Enter your first name</span></label>
                 <input
                   type="text"
                   id="firstName"
                   name="firstName"
                   required
+                  aria-label="First name"
+                  autocomplete="given-name"
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                 />
               </div>
               <div>
-                <label for="lastName" class="block text-sm font-medium text-gray-700">Last name*</label>
+                <label for="lastName" class="block text-sm font-medium text-gray-700">Last name* <span class="sr-only">Enter your last name</span></label>
                 <input
                   type="text"
                   id="lastName"
                   name="lastName"
                   required
+                  aria-label="Last name"
+                  autocomplete="family-name"
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                 />
               </div>
@@ -134,32 +139,37 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email*</label>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email* <span class="sr-only">Enter your email address</span></label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   required
+                  aria-label="Email address"
+                  autocomplete="email"
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                 />
               </div>
               <div>
-                <label for="phone" class="block text-sm font-medium text-gray-700">Phone*</label>
+                <label for="phone" class="block text-sm font-medium text-gray-700">Phone* <span class="sr-only">Enter your phone number</span></label>
                 <input
                   type="tel"
                   id="phone"
                   name="phone"
                   required
+                  aria-label="Phone number"
+                  autocomplete="tel"
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
                 />
               </div>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Type of holiday</label>
+              <label class="block text-sm font-medium text-gray-700">Type of holiday <span class="sr-only">Select your type of holiday</span></label>
               <select 
                 id="holidayType"
                 name="holidayType"
+                aria-label="Type of holiday"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
               >
                 <option value="">Select holiday type</option>
@@ -173,10 +183,11 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Length</label>
+              <label class="block text-sm font-medium text-gray-700">Length <span class="sr-only">Select the length of your trip</span></label>
               <select 
                 id="length"
                 name="length"
+                aria-label="Trip length"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
               >
                 <option value="">Select trip duration</option>

@@ -828,10 +828,12 @@
           <div class="footer-section">
             <h4>Newsletter</h4>
             <p>Subscribe to receive updates about new destinations and special offers.</p>
-            <form class="newsletter-form" action="#" method="POST">
-              <input type="email" placeholder="Enter your email" required>
-              <button type="submit">Subscribe</button>
+            <form id="newsletter-form" class="newsletter-form" action="#" method="POST" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <input type="email" id="newsletterEmail" name="newsletterEmail" placeholder="Enter your email" required style="padding:8px 12px;border-radius:6px;border:1px solid #ccc;min-width:220px;">
+              <input type="text" id="newsletter-hp" name="hp_field" style="display:none" autocomplete="off" tabindex="-1">
+              <button type="submit" id="newsletter-submit" style="background:#00bcd4;color:#fff;padding:8px 20px;border:none;border-radius:6px;font-weight:600;cursor:pointer;">Subscribe</button>
             </form>
+            <div id="newsletter-msg" style="margin-top:8px;font-size:0.95rem;display:none;"></div>
           </div>
         </div>
         <div class="footer-bottom">
@@ -844,5 +846,67 @@
         </div>
       </div>
     </footer>
+    <script>
+document.addEventListener('DOMContentLoaded', function(){
+  const NEWS_URL = "https://script.google.com/macros/s/AKfycbwekokgiEgWbPVH5TtBgpEJLdpxjEMg3F8C6eZ6h5cQmM9u93vWwMtIa2AaWfzepA0/exec";
+  const form = document.getElementById('newsletter-form');
+  const msg = document.getElementById('newsletter-msg');
+  if (!form) return;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    msg.style.display = 'none';
+    const emailInput = document.getElementById('newsletterEmail');
+    const hp = document.getElementById('newsletter-hp');
+    const submitBtn = document.getElementById('newsletter-submit');
+    const emailVal = (emailInput.value || '').trim();
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(emailVal)) {
+      msg.style.color = '#b91c1c';
+      msg.textContent = 'Please enter a valid email address.';
+      msg.style.display = 'block';
+      return;
+    }
+    if (hp && hp.value.trim() !== '') {
+      console.warn('Honeypot triggered; aborting.');
+      return;
+    }
+    submitBtn.disabled = true;
+    try {
+      const fd = new FormData();
+      fd.append('newsletterEmail', emailVal);
+      fd.append('hp_field', hp ? hp.value : '');
+      fd.append('source', 'footer-newsletter');
+      const resp = await fetch(NEWS_URL, {
+        method: 'POST',
+        body: fd,
+        mode: 'cors'
+      });
+      const json = await resp.json().catch(()=>({}));
+      if (resp.ok && json.result === 'success') {
+        msg.style.color = '#FFFFFF';
+        msg.textContent = 'Thanks — you are subscribed! Check your inbox for a confirmation email.';
+        msg.style.display = 'block';
+        form.reset();
+      } else if (json.result === 'spam') {
+        msg.style.color = '#666';
+        msg.textContent = 'Thanks.';
+        msg.style.display = 'block';
+        form.reset();
+      } else {
+        msg.style.color = '#b91c1c';
+        msg.textContent = (json && json.message) ? json.message : 'Subscription failed — please try again later.';
+        msg.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Newsletter submit error', err);
+      msg.style.color = '#b91c1c';
+      msg.textContent = 'Network error — please try again later.';
+      msg.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+});
+</script>
 </body>
 </html>

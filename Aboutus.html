@@ -386,9 +386,9 @@
 
     <!-- Social Links -->
     <div class="social-links">
-        <a href="#" class="social-link" title="LinkedIn"><span>in</span></a>
-        <a href="#" class="social-link" title="Facebook"><span>f</span></a>
-        <a href="#" class="social-link" title="Instagram"><span>📷</span></a>
+    <a href="#" class="social-link" title="LinkedIn"><span>in</span></a>
+    <a href="https://www.facebook.com/share/1CMa5KyQNL" class="social-link" title="Facebook" target="_blank" rel="noopener noreferrer"><span>f</span></a>
+    <a href="https://www.instagram.com/voya.adventure" class="social-link" title="Instagram" target="_blank" rel="noopener noreferrer"><span>📷</span></a>
     </div>
 
     <!-- Footer Section -->
@@ -399,9 +399,9 @@
             <h4>About VOYA</h4>
             <p style="text-align:left;">Crafting surprise journeys that transform how you experience. Every trip is a story waiting to unfold.</p>
             <div class="footer-social">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram"></a>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook"></a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter"></a>
+              <a href="https://www.instagram.com/indiatourism/" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram"></a>
+              <a href="https://www.facebook.com/IncredibleIndia" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Facebook"></a>
+              <!-- Twitter link removed as requested -->
             </div>
           </div>
           <div class="footer-section">
@@ -425,10 +425,12 @@
           <div class="footer-section">
             <h4>Newsletter</h4>
             <p>Subscribe to receive updates about new destinations and special offers.</p>
-            <form class="newsletter-form" action="#" method="POST">
-              <input type="email" placeholder="Enter your email" required>
-              <button type="submit">Subscribe</button>
+            <form id="newsletter-form" class="newsletter-form" action="#" method="POST" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <input type="email" id="newsletterEmail" name="newsletterEmail" placeholder="Enter your email" required style="padding:8px 12px;border-radius:6px;border:1px solid #ccc;min-width:220px;">
+              <input type="text" id="newsletter-hp" name="hp_field" style="display:none" autocomplete="off" tabindex="-1">
+              <button type="submit" id="newsletter-submit" style="background:#00bcd4;color:#fff;padding:8px 20px;border:none;border-radius:6px;font-weight:600;cursor:pointer;">Subscribe</button>
             </form>
+            <div id="newsletter-msg" style="margin-top:8px;font-size:0.95rem;display:none;"></div>
           </div>
         </div>
         <div class="footer-bottom">
@@ -487,6 +489,66 @@
             }
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
+        document.addEventListener('DOMContentLoaded', function(){
+  const NEWS_URL = "https://script.google.com/macros/s/AKfycbwekokgiEgWbPVH5TtBgpEJLdpxjEMg3F8C6eZ6h5cQmM9u93vWwMtIa2AaWfzepA0/exec";
+  const form = document.getElementById('newsletter-form');
+  const msg = document.getElementById('newsletter-msg');
+  if (!form) return;
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    msg.style.display = 'none';
+    const emailInput = document.getElementById('newsletterEmail');
+    const hp = document.getElementById('newsletter-hp');
+    const submitBtn = document.getElementById('newsletter-submit');
+    const emailVal = (emailInput.value || '').trim();
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(emailVal)) {
+      msg.style.color = '#b91c1c';
+      msg.textContent = 'Please enter a valid email address.';
+      msg.style.display = 'block';
+      return;
+    }
+    if (hp && hp.value.trim() !== '') {
+      console.warn('Honeypot triggered; aborting.');
+      return;
+    }
+    submitBtn.disabled = true;
+    try {
+      const fd = new FormData();
+      fd.append('newsletterEmail', emailVal);
+      fd.append('hp_field', hp ? hp.value : '');
+      fd.append('source', 'footer-newsletter');
+      const resp = await fetch(NEWS_URL, {
+        method: 'POST',
+        body: fd,
+        mode: 'cors'
+      });
+      const json = await resp.json().catch(()=>({}));
+      if (resp.ok && json.result === 'success') {
+        msg.style.color = '#FFFFFF';
+        msg.textContent = 'Thanks — you are subscribed! Check your inbox for a confirmation email.';
+        msg.style.display = 'block';
+        form.reset();
+      } else if (json.result === 'spam') {
+        msg.style.color = '#666';
+        msg.textContent = 'Thanks.';
+        msg.style.display = 'block';
+        form.reset();
+      } else {
+        msg.style.color = '#b91c1c';
+        msg.textContent = (json && json.message) ? json.message : 'Subscription failed — please try again later.';
+        msg.style.display = 'block';
+      }
+    } catch (err) {
+      console.error('Newsletter submit error', err);
+      msg.style.color = '#b91c1c';
+      msg.textContent = 'Network error — please try again later.';
+      msg.style.display = 'block';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+});
     </script>
 </body>
 </html>

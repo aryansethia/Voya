@@ -1,5 +1,0 @@
-Contact: mailto:aryansethia.12@gmail.com
-Contact: mailto:ipm05aryans@iimrohtak.ac.in
-Expires: 2030-05-11T15:15:00.000Z
-Preferred-Languages: en, hindi
-Canonical: https://aryansethia.github.io/Voya/.well-known/security.txt
